@@ -1,8 +1,7 @@
 const fs = require('fs');
-const { SolarElement, EmptyElement } = require('./element.js');
+const { SolarElement, isValidElementType } = require('./element.js');
 
 const CONFIG_FILE = "./config.json";
-const VALID_TYPES = ["House", "Van"];
 
 module.exports = function (lines, columns) {
 
@@ -39,13 +38,13 @@ module.exports = function (lines, columns) {
 
     function populateBoard(elements) {
         elements.forEach(populate);
-        fillBoard();
     }
 
     function populate(element) {
         let { pos, type } = getElementValidPositionAndType(element);
         if (pos == null || type == null) return;
-        board[pos.x][pos.y] = new SolarElement(element);
+        let solarElement = new SolarElement(element);
+        board[pos.x][pos.y] = solarElement;
 
         function getElementValidPositionAndType(element) {
             return {
@@ -60,22 +59,11 @@ module.exports = function (lines, columns) {
             if (pos.length != 2) return null;
             if (pos[0] < 0 || pos[0] >= lines) return null;
             if (pos[1] < 0 || pos[1] >= columns) return null;
-            return {x: pos[0], y: pos[1]};
+            return { x: pos[0], y: pos[1] };
         }
 
         function getElementValidType(type) {
-            if (type == undefined) return null;
-            if (!VALID_TYPES.includes(type)) return null;
-            return type;
-        }
-    }
-
-    function fillBoard() {
-        for (let i = 0; i < lines; i++) {
-            for (let j = 0; j < columns; j++) {
-                if (board[i][j] == undefined)
-                    board[i][j] = new EmptyElement();
-            }
+            return isValidElementType ? type : null;
         }
     }
 
@@ -83,8 +71,9 @@ module.exports = function (lines, columns) {
         for (let i = 0; i < lines; i++) {
             let line = "[";
             for (let j = 0; j < columns; j++) {
-                line = line.concat(` ${board[i][j].type} `);
-                line = fill(board[i][j], line);
+                let type = board[i][j] ? board[i][j].type : "Empty";
+                line = line.concat(` ${type} `);
+                line = fill(type, line);
                 if (j + 1 != columns) {
                     line = line.concat(`,`);
                 }
@@ -92,10 +81,10 @@ module.exports = function (lines, columns) {
             console.log(`${line.concat("]")}`);
         }
 
-        function fill(element, line) {
+        function fill(type, line) {
             const maxElementTypeLength = 5;
-            if (element.type.length < maxElementTypeLength) {
-                let spaces = maxElementTypeLength - element.type.length;
+            if (type.length < maxElementTypeLength) {
+                let spaces = maxElementTypeLength - type.length;
                 for (let i = 0; i < spaces; i++) {
                     line = line.concat(" ");
                 }
