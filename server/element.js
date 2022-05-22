@@ -4,22 +4,24 @@ function House(position, solarPanels) {
   this.type = "House";
   this.position = {x: position.x, y: position.y};
   this.solarPanels = solarPanels;
+  this.irradiance = 0;
 }
 
 function Van(position, solarPanels) {
   this.type = "Van";
   this.position = {x: position.x, y: position.y};
   this.solarPanels = solarPanels;
+  this.irradiance = 0;
 }
 
-exports.SolarElement = function(e) {
+exports.SolarElement = function(type, position, solarPanels) {
   let element = null;
-  switch(e.type) {
+  switch(type) {
     case "House":
-      element = new House(e.position, e.solarPanels);
+      element = new House(position, solarPanels);
       break;
     case "Van":
-      element = new Van(e.position, e.solarPanels);
+      element = new Van(position, solarPanels);
       break;
   }
   return element;

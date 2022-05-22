@@ -1,4 +1,5 @@
 const fs = require('fs');
+const { isStringObject } = require('util/types');
 const { SolarElement, isValidElementType } = require('./element.js');
 
 const CONFIG_FILE = "./config.json";
@@ -23,7 +24,7 @@ module.exports = function (lines, columns) {
         printBoard();
     }
 
-    function get(line, column) {
+    function get(column, line) {
         return board[line][column];
     }
 
@@ -43,8 +44,8 @@ module.exports = function (lines, columns) {
     function populate(element) {
         let { pos, type } = getElementValidPositionAndType(element);
         if (pos == null || type == null) return;
-        let solarElement = new SolarElement(element);
-        board[pos.x][pos.y] = solarElement;
+        let solarElement = new SolarElement(type, pos, element.solarPanels);
+        board[pos.y][pos.x] = solarElement;
 
         function getElementValidPositionAndType(element) {
             return {
@@ -55,10 +56,10 @@ module.exports = function (lines, columns) {
 
         function getElementValidPosition(position) {
             if (position == undefined) return null;
-            let pos = position.split(",", 2);
+            let pos = position.split(",", 2).map(Number);
             if (pos.length != 2) return null;
-            if (pos[0] < 0 || pos[0] >= lines) return null;
-            if (pos[1] < 0 || pos[1] >= columns) return null;
+            if (pos[0] < 0 || pos[0] >= columns) return null;
+            if (pos[1] < 0 || pos[1] >= lines) return null;
             return { x: pos[0], y: pos[1] };
         }
 

@@ -2,26 +2,31 @@
   {
     "type": "House",
     "position": "1,1",
-    "solarPanels": "1"
+    "solarPanels": 1
   },
   {
     "type": "House",
     "position": "4,2",
-    "solarPanels": "3"
+    "solarPanels": 3
   },
   {
     "type": "House",
     "position": "7,4",
-    "solarPanels": "2"
+    "solarPanels": 2
+  },
+  {
+    "type": "House",
+    "position": "9,3",
+    "solarPanels": 1
   },
   {
     "type": "Van",
     "position": "1,5",
-    "solarPanels": "1"
+    "solarPanels": 1
   },
   {
     "type": "Van",
     "position": "8,9",
-    "solarPanels": "1"
+    "solarPanels": 1
   }
 ]
