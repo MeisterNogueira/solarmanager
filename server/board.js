@@ -9,6 +9,9 @@ module.exports = function (lines, columns) {
     const board = createBoard(lines, columns);
 
     return {
+        lines: lines,
+        columns: columns,
+        board: board,
         init: init,
         get: get,
         put: put

@@ -1,4 +1,5 @@
 const board = require('./board.js')(10, 10);
+const db = require('./firestore-db.js')();
 const { Sun } = require('./element.js');
 
 // In Wh/m^2
@@ -8,23 +9,51 @@ const SOLAR_PANEL_ENERGY = 200;
 
 function app() {
   const sun = new Sun(0, 9);
+  const user = { username: "admin" };
   board.init();
+  db.createBoard(user.username, {
+    lines: board.lines,
+    columns: board.columns,
+    board: [
+      {
+        "type": "House",
+        "position": "1,1",
+        "solarPanels": 1
+      },
+      {
+        "type": "House",
+        "position": "4,2",
+        "solarPanels": 3
+      },
+      {
+        "type": "House",
+        "position": "7,4",
+        "solarPanels": 2
+      },
+      {
+        "type": "House",
+        "position": "9,3",
+        "solarPanels": 1
+      },
+      {
+        "type": "Van",
+        "position": "1,5",
+        "solarPanels": 1
+      },
+      {
+        "type": "Van",
+        "position": "8,9",
+        "solarPanels": 1
+      }
+    ],
+  });
 
-  /*for (let i = 0; i < 10; i++) {
-    for (let j = 0; j < 10; j++) {
-      let solarElement = board.get(i, j);
-      if (solarElement == null) continue;
-
-      calculateAndUpdateIrradiance(solarElement);
-    }
-  }*/
-  updateElement(board.get(9, 3));
+  db.getUserBoard(user.username);
+  //updateElement(board.get(9, 3));
 
   function updateElement(solarElement) {
     let solarIrradiance = calculateIrradiance();
     let solarPanelOutput = calculateSolarOutput();
-    console.log(`irradiance: ${solarIrradiance}Wh`);
-    console.log(`output: ${solarPanelOutput}Wh`);
 
     function calculateIrradiance() {
       let sunDistance = getSunDistanceToElement(sun, solarElement);
