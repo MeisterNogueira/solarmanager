@@ -24,7 +24,7 @@ module.exports = function (lines, columns) {
     function init() {
         const elements = readElementsFromConfigFile();
         populateBoard(elements);
-        printBoard();
+        //printBoard();
     }
 
     function get(column, line) {

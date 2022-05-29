@@ -6,6 +6,9 @@ initializeApp({
   credential: cert(serviceAccount)
 });
 
+const userDb = require('./models/user-db.js');
+const boardDb = require('./models/board-db.js');
+
 const USER_COLLECTION = "users";
 const BOARD_COLLECTION = "boards";
 
@@ -13,29 +16,15 @@ module.exports = function() {
   const db = getFirestore();
 
   return {
-    createBoard: createBoard,
-    getUserBoard: getUserBoard
+    user: user,
+    board: board
   }
 
-  async function createBoard(username, board) {
-    const newBoardRef = await db.collection(BOARD_COLLECTION).add(board);
-    updateUserBoard(username, newBoardRef.id);
+  function user() {
+    return userDb(db.collection(USER_COLLECTION));
   }
 
-  async function updateUserBoard(username, boardId) {
-    const newUserBoardRef = db.collection(USER_COLLECTION).doc(username);
-    const res = await newUserBoardRef.set({
-      boardId: boardId
-    }, { merge: true });
-  }
-
-  async function getUserBoard(username) {
-    const userRef = db.collection(USER_COLLECTION).doc(username);
-    const userDoc = await userRef.get();
-    if (!userDoc.exists) return;
-
-    const userBoardRef = db.collection(BOARD_COLLECTION).doc(userDoc.data().boardId);
-    const userBoardDoc = await userBoardRef.get();
-    console.log(userBoardDoc.data());
+  function board() {
+    return boardDb(db, db.collection(BOARD_COLLECTION));
   }
 }
