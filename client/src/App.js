@@ -6,12 +6,14 @@ import { SolarElementDetails } from './components/SolarElementDetails';
 import { SolarElementsMap } from './components/SolarElementsMap';
 
 function App() {
-  const [selectedId, setSelectedId] = useState("M6lhc1kakoK5SYEXN4aq");
+  const [selectedId, setSelectedId] = useState(null);
   const [position, setPosition] = useState(null);
   const [changingPosition, setChangingPosition] = useState(false);
   const [changingSun, setChangingSun] = useState(false);
   const [postElement, setPostElement] = useState(false);
   const [updateSun, setUpdateSun] = useState(false);
+  const [sun, setSun] = useState(null);
+  const [fetchElements, setFetchElements] = useState(true);
 
   useEffect(() => {
     if (!changingPosition) return;
@@ -45,10 +47,9 @@ function App() {
   }, [postElement]);
 
   useEffect(() => {
-    if (!updateSun) return;
+    if (!updateSun || sun == null) return;
 
-    // TODO get id
-    const uri = `${API_BASE_URI}/board/elements/${sunId}`;
+    const uri = `${API_BASE_URI}/board/elements/${sun.id}`;
     const headers = buildHeaders('PUT', {
       position: position,
     });
@@ -57,7 +58,6 @@ function App() {
       try {
         const response = await fetch(uri, headers);
         const json = await response.json();
-        console.log(json);
       } catch (error) {
         console.log("error", error);
       }
@@ -67,6 +67,7 @@ function App() {
     setChangingPosition(false);
     setChangingSun(false);
     updateElement();
+    setFetchElements(true);
   }, [updateSun]);
 
   function createHouse() {
@@ -85,10 +86,13 @@ function App() {
         setSelectedId={setSelectedId}
         changingPosition={changingPosition}
         setPosition={setPosition}
+        setSun={setSun}
+        fetchElements={fetchElements}
+        setFetchElements={setFetchElements}
       />
-      <SolarElementDetails id={selectedId}/>
+      {selectedId ? <SolarElementDetails id={selectedId}/> : <></>}
       <button onClick={createHouse}>Create House</button>
-      <button onClick={moveSun}>Move Sun</button>
+      <button disabled={sun == null} onClick={moveSun}>Move Sun</button>
     </div>
   );
 }

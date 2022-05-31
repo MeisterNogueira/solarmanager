@@ -2,12 +2,13 @@ import { useEffect, useState } from "react";
 import { API_BASE_URI, buildHeaders } from "../utils/solarmanager-utils";
 import { SolarElement } from "./SolarElement";
 
-export function SolarElementsMap({ setSelectedId, changingPosition, setPosition }) {
+export function SolarElementsMap(
+  { setSelectedId, changingPosition, setPosition, setSun, fetchElements, setFetchElements }
+) {
 
   const [fetchBoard, setFetchBoard] = useState(true);
   const [board, setBoard] = useState(null);
 
-  const [fetchElements, setFetchElements] = useState(true);
   const [elements, setElements] = useState(null);
 
   useEffect(() => {
@@ -33,6 +34,7 @@ export function SolarElementsMap({ setSelectedId, changingPosition, setPosition 
 
   useEffect(() => {
     if (!fetchElements) return;
+    console.log("fetching elements");
 
     const uri = `${API_BASE_URI}/board/elements`;
     const headers = buildHeaders('GET');
@@ -43,9 +45,16 @@ export function SolarElementsMap({ setSelectedId, changingPosition, setPosition 
         const json = await response.json();
         //console.log(json);
         setElements(json);
+        findAndSetSun(json);
       } catch (error) {
         console.log("error", error);
       }
+    }
+
+    function findAndSetSun(elements) {
+      const sun = elements.find(element => element.data.type == "Sun");
+      if (sun)
+        setSun(sun);
     }
 
     setFetchElements(false);
