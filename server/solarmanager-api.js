@@ -17,31 +17,31 @@ module.exports = function(service) {
 
   // GET /board
   function getBoard(req, res) {
-    let username = "admin";
+    let username = req.username;
     service.getBoard(username).sendResponse(res);
   }
 
   // GET /board/elements
   function getBoardElements(req, res) {
-    let username = "admin";
+    let username = req.username;
     service.getBoardElements(username).sendResponse(res);
   }
 
   // POST /board/elements
   function postBoardElement(req, res) {
-    let username = "admin";
+    let username = req.username;
     service.postBoardElement(username, req.body).sendResponse(res, 201);
   }
 
   // GET /board/elements/:id
   function getBoardElement(req, res) {
-    let username = "admin";
+    let username = req.username;
     service.getBoardElement(username, req.params.id).sendResponse(res);
   }
 
   // PUT /board/elements/:id
   function putBoardElement(req, res) {
-    let username = "admin";
+    let username = req.username;
     service.updateBoardElement(username, req.params.id, req.body).sendResponse(res);
   }
 
