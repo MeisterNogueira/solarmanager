@@ -58,9 +58,9 @@ module.exports = function(service) {
 
     function processResponse(res, statusCode) {
       return function(data) {
-        res.statusCode = statusCode(data)
-        res.setHeader("Content-Type", "application/json")
-        res.end(JSON.stringify(data, 0, 4))
+        res.statusCode = statusCode(data);
+        res.setHeader("Content-Type", "application/json");
+        res.end(JSON.stringify(data, 0, 4));
       }
     }
   }

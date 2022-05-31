@@ -1,4 +1,5 @@
 const express = require('express');
+const cors = require('cors');
 const bodyParser = require('body-parser');
 
 const db = require('./firestore-db.js')();
@@ -8,7 +9,13 @@ const router = require('./solarmanager-api.js')(service);
 
 const app = express();
 
+app.use(cors());
+
 app.use(bodyParser.json());
+app.use((req, res, next) => {
+  console.log(req.originalUrl);
+  next();
+});
 app.use('/solarmanager', authRouter);
 app.use('/solarmanager', router);
 
